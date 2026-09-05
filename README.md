@@ -130,11 +130,14 @@ transactions
   confidence, source ('photo' | 'manual'), created_at
 
 extraction_logs            (accuracy measurement — no image)
-  id, user_id, raw_llm_json, model, prompt_version,
-  confidence, latency_ms, created_at
+  id, user_id, raw_llm_json, parsed_ok, error_code,
+  model, prompt_version, confidence, latency_ms, created_at
 ```
 
-Money is always stored as **integer cents**; dates in UTC; `user_id` and RLS on every table from day one.
+Money is always stored as **integer cents**; `occurred_on` is a date, `created_at` a UTC
+timestamp; `user_id` + row-level security on every table from the first migration. The
+canonical schema is `lib/db/schema.ts` and the generated SQL in `lib/db/migrations/`; the
+full column tables live in [`docs/phase-0.md`](docs/phase-0.md).
 
 ---
 
