@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -21,9 +22,17 @@ export function Nav() {
       <nav className="mx-auto flex h-14 max-w-2xl items-center gap-1 px-4">
         <Link
           href="/dashboard"
-          className="mr-auto text-base font-semibold tracking-tight text-foreground"
+          className="mr-auto flex items-center gap-2 text-base font-semibold tracking-tight text-foreground"
         >
-          <span className="text-primary">●</span> Ledger
+          <Image
+            src="/ledger-logo.png"
+            alt=""
+            width={24}
+            height={24}
+            className="rounded-md"
+            priority
+          />
+          Ledger
         </Link>
         {LINKS.map((link) => {
           const active =
