@@ -12,6 +12,7 @@ import {
 } from "@/components/dashboard/data";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
@@ -54,6 +55,7 @@ export function TransactionList() {
   const locale = useLocale();
   const { data, error, loading, reload } = useTransactions({ limit: 50 });
   const [editingId, setEditingId] = React.useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = React.useState<string | null>(null);
   const [rowError, setRowError] = React.useState<string | null>(null);
   // Optimistic local overlays on top of the fetched list.
   const [deletedIds, setDeletedIds] = React.useState<Set<string>>(
@@ -77,6 +79,8 @@ export function TransactionList() {
   if (rows.length === 0) {
     return <Card className="text-sm text-muted">{t("empty")}</Card>;
   }
+
+  const confirmTarget = rows.find((tx) => tx.id === confirmingId) ?? null;
 
   async function handleDelete(id: string) {
     setRowError(null);
@@ -160,7 +164,10 @@ export function TransactionList() {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => handleDelete(tx.id)}
+                onClick={() => {
+                  setRowError(null);
+                  setConfirmingId(tx.id);
+                }}
               >
                 {t("delete")}
               </Button>
@@ -168,6 +175,31 @@ export function TransactionList() {
           </div>
         ),
       )}
+      <ConfirmDialog
+        open={confirmingId !== null}
+        title={t("confirmDeleteTitle")}
+        description={
+          confirmTarget
+            ? t("confirmDeleteBody", {
+                merchant: confirmTarget.merchantName,
+                amount: formatMoney(
+                  confirmTarget.amountCents,
+                  confirmTarget.currency,
+                  locale,
+                ),
+              })
+            : null
+        }
+        confirmLabel={t("delete")}
+        cancelLabel={t("cancel")}
+        destructive
+        onConfirm={() => {
+          const id = confirmingId;
+          setConfirmingId(null);
+          if (id) void handleDelete(id);
+        }}
+        onCancel={() => setConfirmingId(null)}
+      />
     </Card>
   );
 }
