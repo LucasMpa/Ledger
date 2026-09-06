@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "title": "Ledger",
+    "description": "Fotografe o recibo. Esqueça a planilha."
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "sendReceipt": "Enviar Recibo",
+    "language": "Idioma"
+  },
+  "dashboard": {
+    "reports": "Relatórios",
+    "transactions": "Transações",
+    "settings": "Configurações"
+  },
+  "reports": {
+    "thisMonth": "Este mês",
+    "transactionCount": "{count, plural, one {# transação} other {# transações}}",
+    "exportCsv": "Exportar CSV",
+    "lastMonths": "Últimos {count} meses",
+    "topMerchants": "Maiores gastos por estabelecimento · últimos {count} meses",
+    "spent": "Gasto",
+    "peak": "pico {value}",
+    "loading": "Carregando relatórios…",
+    "noData": "Ainda não há transações. Envie um recibo para começar."
+  },
+  "transactions": {
+    "loading": "Carregando transações…",
+    "empty": "Ainda não há transações. Envie um recibo para adicionar a primeira.",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "save": "Salvar",
+    "saving": "Salvando…",
+    "cancel": "Cancelar",
+    "merchant": "Estabelecimento",
+    "amount": "Valor",
+    "date": "Data",
+    "category": "Categoria",
+    "paymentMethod": "Forma de pagamento",
+    "noMethod": "Nenhuma",
+    "errDelete": "Não foi possível excluir.",
+    "errSave": "Não foi possível salvar as alterações.",
+    "merchantRequired": "Estabelecimento é obrigatório.",
+    "amountPositive": "O valor deve ser maior que zero.",
+    "dateNotFuture": "A data não pode estar no futuro."
+  },
+  "receiptForm": {
+    "lowConfidence": "Confiança baixa",
+    "lowConfidenceHint": "O modelo não teve certeza — confira todos os campos.",
+    "merchant": "Estabelecimento",
+    "amount": "Valor ({currency})",
+    "date": "Data",
+    "category": "Categoria",
+    "paymentMethod": "Forma de pagamento",
+    "notSpecified": "Não informado",
+    "confirm": "Confirmar",
+    "saving": "Salvando…",
+    "discard": "Descartar",
+    "enterMerchant": "Informe o nome do estabelecimento.",
+    "enterAmount": "Informe um valor maior que zero.",
+    "pickDate": "Selecione a data do recibo.",
+    "dateNotFuture": "A data não pode estar no futuro."
+  },
+  "sendReceipt": {
+    "heading": "Enviar Recibo",
+    "subtitle": "Tire ou escolha uma foto do recibo — o resto é preenchido para você.",
+    "chooseDifferent": "Escolher outra foto",
+    "tapToChoose": "Toque para tirar ou escolher uma foto",
+    "extract": "Extrair",
+    "reading": "Lendo o recibo…",
+    "saved": "Transação salva",
+    "savedHint": "Já está no seu painel e no total deste mês.",
+    "sendAnother": "Enviar outro",
+    "genericError": "Algo deu errado. Tente de novo.",
+    "saveError": "Não foi possível salvar a transação. Tente de novo.",
+    "previewAlt": "Prévia do recibo"
+  },
+  "login": {
+    "metaTitle": "Entrar · Ledger",
+    "heading": "Entrar",
+    "subtitle": "Entre para enviar recibos e ver seus relatórios.",
+    "linkError": "Esse link de acesso não funcionou. Peça um novo abaixo.",
+    "email": "E-mail",
+    "emailPlaceholder": "voce@exemplo.com",
+    "sendLink": "Enviar link de acesso",
+    "sending": "Enviando…",
+    "checkEmail": "Confira seu e-mail",
+    "checkEmailHint": "Enviamos um link de acesso para {email}. Abra-o neste dispositivo para continuar.",
+    "noPassword": "Sem senha — enviamos um link único por e-mail."
+  },
+  "settings": {
+    "signedInAs": "Conectado como {email}.",
+    "notSignedIn": "Você não está conectado.",
+    "signOut": "Sair",
+    "signIn": "Entrar"
+  },
+  "common": {
+    "retry": "Tentar de novo",
+    "couldntLoad": "Não foi possível carregar",
+    "signInToSeeData": "Entre para ver seus dados",
+    "sessionExpired": "Sua sessão expirou ou você saiu.",
+    "goToSignIn": "Ir para o login"
+  },
+  "categories": {
+    "groceries": "Mercado",
+    "food": "Alimentação",
+    "transport": "Transporte",
+    "health": "Saúde",
+    "home": "Casa",
+    "leisure": "Lazer",
+    "clothing": "Vestuário",
+    "services": "Serviços",
+    "other": "Outros"
+  },
+  "paymentMethods": {
+    "cash": "Dinheiro",
+    "credit": "Crédito",
+    "debit": "Débito",
+    "pix": "Pix",
+    "other": "Outro"
+  },
+  "csv": {
+    "date": "Data",
+    "merchant": "Estabelecimento",
+    "category": "Categoria",
+    "amount": "Valor",
+    "currency": "Moeda",
+    "paymentMethod": "Forma de pagamento",
+    "source": "Origem",
+    "loggedAt": "Registrado em",
+    "sourcePhoto": "foto",
+    "sourceManual": "manual"
+  }
+}

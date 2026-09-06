@@ -1,0 +1,18 @@
+import { cookies } from "next/headers";
+import { getRequestConfig } from "next-intl/server";
+
+import { defaultLocale, isLocale, LOCALE_COOKIE } from "@/i18n/config";
+
+/**
+ * Resolves the active locale from the `NEXT_LOCALE` cookie (no URL routing),
+ * falling back to the default. Loads the matching message catalogue.
+ */
+export default getRequestConfig(async () => {
+  const cookieLocale = (await cookies()).get(LOCALE_COOKIE)?.value;
+  const locale = isLocale(cookieLocale) ? cookieLocale : defaultLocale;
+
+  return {
+    locale,
+    messages: (await import(`../messages/${locale}.json`)).default,
+  };
+});

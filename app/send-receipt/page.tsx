@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import * as React from "react";
 
 import { ReceiptForm, type ReceiptFormValues } from "@/components/receipt-form";
@@ -15,6 +16,7 @@ import type { ExtractionResult } from "@/lib/extraction";
 type Phase = "capture" | "review" | "done";
 
 export default function SendReceiptPage() {
+  const t = useTranslations("sendReceipt");
   const [phase, setPhase] = React.useState<Phase>("capture");
   const [file, setFile] = React.useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
@@ -64,7 +66,7 @@ export default function SendReceiptPage() {
       setExtractError(
         err instanceof ApiError || err instanceof Error
           ? err.message
-          : "Something went wrong. Try again.",
+          : t("genericError"),
       );
     } finally {
       setExtracting(false);
@@ -86,7 +88,7 @@ export default function SendReceiptPage() {
       setSubmitError(
         err instanceof ApiError || err instanceof Error
           ? err.message
-          : "Could not save the transaction. Try again.",
+          : t("saveError"),
       );
     } finally {
       setSubmitting(false);
@@ -96,10 +98,10 @@ export default function SendReceiptPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Send Receipt</h1>
-        <p className="text-sm text-muted">
-          Snap or pick a photo of the receipt — the rest is filled in for you.
-        </p>
+        <h1 className="text-xl font-semibold text-foreground">
+          {t("heading")}
+        </h1>
+        <p className="text-sm text-muted">{t("subtitle")}</p>
       </div>
 
       {phase === "capture" && (
@@ -109,9 +111,7 @@ export default function SendReceiptPage() {
             className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-background px-4 py-10 text-center text-sm text-muted hover:border-primary"
           >
             <span className="text-2xl">📸</span>
-            <span>
-              {file ? "Choose a different photo" : "Tap to take or choose a photo"}
-            </span>
+            <span>{file ? t("chooseDifferent") : t("tapToChoose")}</span>
             <input
               id="receipt"
               type="file"
@@ -127,7 +127,7 @@ export default function SendReceiptPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={previewUrl}
-                alt="Receipt preview"
+                alt={t("previewAlt")}
                 className="max-h-80 w-full object-contain"
               />
             </div>
@@ -140,7 +140,7 @@ export default function SendReceiptPage() {
           )}
 
           <Button onClick={handleExtract} disabled={!file || extracting}>
-            {extracting ? "Reading receipt…" : "Extract"}
+            {extracting ? t("reading") : t("extract")}
           </Button>
         </Card>
       )}
@@ -160,12 +160,10 @@ export default function SendReceiptPage() {
       {phase === "done" && (
         <Card className="flex flex-col items-center gap-3 py-8 text-center">
           <span className="text-3xl">✅</span>
-          <p className="font-medium text-foreground">Transaction saved</p>
-          <p className="text-sm text-muted">
-            It&apos;s now in your dashboard and this month&apos;s totals.
-          </p>
+          <p className="font-medium text-foreground">{t("saved")}</p>
+          <p className="text-sm text-muted">{t("savedHint")}</p>
           <Button onClick={resetToCapture} className="mt-2">
-            Send another
+            {t("sendAnother")}
           </Button>
         </Card>
       )}

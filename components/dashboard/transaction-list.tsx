@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 
 import {
@@ -18,14 +19,14 @@ import {
   deleteTransaction,
   updateTransaction,
 } from "@/lib/api-client";
-import { CATEGORIES, categoryLabels, type Category } from "@/lib/categories";
+import { CATEGORIES, type Category } from "@/lib/categories";
 // Leaf import, not the `@/lib/extraction` barrel (which drags in `lib/env.ts`).
 import { PAYMENT_METHODS } from "@/lib/extraction/schema";
 import { todayUtc, type TransactionDto } from "@/lib/transactions";
 
-function formatMoney(cents: number, currency: string): string {
+function formatMoney(cents: number, currency: string, locale: string): string {
   try {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
     }).format(cents / 100);
@@ -34,7 +35,23 @@ function formatMoney(cents: number, currency: string): string {
   }
 }
 
+function formatDate(iso: string, locale: string): string {
+  try {
+    return new Intl.DateTimeFormat(locale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(`${iso}T00:00:00Z`));
+  } catch {
+    return iso;
+  }
+}
+
 export function TransactionList() {
+  const t = useTranslations("transactions");
+  const tCat = useTranslations("categories");
+  const locale = useLocale();
   const { data, error, loading, reload } = useTransactions({ limit: 50 });
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [rowError, setRowError] = React.useState<string | null>(null);
@@ -44,7 +61,7 @@ export function TransactionList() {
   );
   const [edits, setEdits] = React.useState<Record<string, TransactionDto>>({});
 
-  if (loading) return <LoadingPanel label="Loading transactions…" />;
+  if (loading) return <LoadingPanel label={t("loading")} />;
   if (error) {
     return isUnauthenticated(error) ? (
       <SignInPanel />
@@ -54,15 +71,11 @@ export function TransactionList() {
   }
 
   const rows = (data?.transactions ?? [])
-    .filter((t) => !deletedIds.has(t.id))
-    .map((t) => edits[t.id] ?? t);
+    .filter((tx) => !deletedIds.has(tx.id))
+    .map((tx) => edits[tx.id] ?? tx);
 
   if (rows.length === 0) {
-    return (
-      <Card className="text-sm text-muted">
-        No transactions yet. Send a receipt to add the first one.
-      </Card>
-    );
+    return <Card className="text-sm text-muted">{t("empty")}</Card>;
   }
 
   async function handleDelete(id: string) {
@@ -79,7 +92,7 @@ export function TransactionList() {
       setRowError(
         err instanceof ApiError || err instanceof Error
           ? err.message
-          : "Could not delete.",
+          : t("errDelete"),
       );
     }
   }
@@ -94,7 +107,7 @@ export function TransactionList() {
       setRowError(
         err instanceof ApiError || err instanceof Error
           ? err.message
-          : "Could not save changes.",
+          : t("errSave"),
       );
     }
   }
@@ -127,11 +140,11 @@ export function TransactionList() {
                 {tx.merchantName}
               </p>
               <p className="text-xs text-muted">
-                {categoryLabels[tx.category]} · {tx.occurredOn}
+                {tCat(tx.category)} · {formatDate(tx.occurredOn, locale)}
               </p>
             </div>
             <span className="shrink-0 tabular-nums font-medium">
-              {formatMoney(tx.amountCents, tx.currency)}
+              {formatMoney(tx.amountCents, tx.currency, locale)}
             </span>
             <div className="flex shrink-0 gap-1">
               <Button
@@ -142,14 +155,14 @@ export function TransactionList() {
                   setEditingId(tx.id);
                 }}
               >
-                Edit
+                {t("edit")}
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => handleDelete(tx.id)}
               >
-                Delete
+                {t("delete")}
               </Button>
             </div>
           </div>
@@ -176,6 +189,9 @@ function EditRow({
   onCancel: () => void;
   onSave: (patch: EditPatch) => void;
 }) {
+  const t = useTranslations("transactions");
+  const tCat = useTranslations("categories");
+  const tPay = useTranslations("paymentMethods");
   const [merchantName, setMerchantName] = React.useState(tx.merchantName);
   const [amount, setAmount] = React.useState((tx.amountCents / 100).toFixed(2));
   const [category, setCategory] = React.useState<Category>(tx.category);
@@ -192,15 +208,15 @@ function EditRow({
     const trimmed = merchantName.trim();
     const parsed = Number(amount.trim().replace(",", "."));
     if (!trimmed) {
-      setLocalError("Merchant is required.");
+      setLocalError(t("merchantRequired"));
       return;
     }
     if (!Number.isFinite(parsed) || parsed <= 0) {
-      setLocalError("Amount must be greater than zero.");
+      setLocalError(t("amountPositive"));
       return;
     }
     if (!occurredOn || occurredOn > today) {
-      setLocalError("Date must not be in the future.");
+      setLocalError(t("dateNotFuture"));
       return;
     }
     setLocalError(null);
@@ -220,20 +236,20 @@ function EditRow({
   return (
     <form onSubmit={submit} className="flex flex-col gap-2 px-4 py-3">
       <Input
-        aria-label="Merchant"
+        aria-label={t("merchant")}
         value={merchantName}
         onChange={(e) => setMerchantName(e.target.value)}
         maxLength={200}
       />
       <div className="flex gap-2">
         <Input
-          aria-label="Amount"
+          aria-label={t("amount")}
           inputMode="decimal"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
         <Input
-          aria-label="Date"
+          aria-label={t("date")}
           type="date"
           value={occurredOn}
           max={today}
@@ -242,25 +258,25 @@ function EditRow({
       </div>
       <div className="flex gap-2">
         <Select
-          aria-label="Category"
+          aria-label={t("category")}
           value={category}
           onChange={(e) => setCategory(e.target.value as Category)}
         >
           {CATEGORIES.map((slug) => (
             <option key={slug} value={slug}>
-              {categoryLabels[slug]}
+              {tCat(slug)}
             </option>
           ))}
         </Select>
         <Select
-          aria-label="Payment method"
+          aria-label={t("paymentMethod")}
           value={paymentMethod}
           onChange={(e) => setPaymentMethod(e.target.value)}
         >
-          <option value="">No method</option>
+          <option value="">{t("noMethod")}</option>
           {PAYMENT_METHODS.map((method) => (
             <option key={method} value={method}>
-              {method[0].toUpperCase() + method.slice(1)}
+              {tPay(method)}
             </option>
           ))}
         </Select>
@@ -272,7 +288,7 @@ function EditRow({
       )}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={saving} className="flex-1">
-          {saving ? "Saving…" : "Save"}
+          {saving ? t("saving") : t("save")}
         </Button>
         <Button
           type="button"
@@ -281,7 +297,7 @@ function EditRow({
           onClick={onCancel}
           disabled={saving}
         >
-          Cancel
+          {t("cancel")}
         </Button>
       </div>
     </form>

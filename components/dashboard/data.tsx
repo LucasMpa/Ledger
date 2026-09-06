@@ -1,14 +1,17 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import * as React from "react";
 
 import { Card } from "@/components/ui/card";
 import {
   ApiError,
+  getReportsSummary,
   listTransactions,
   type ListTransactionsParams,
   type TransactionListResponse,
 } from "@/lib/api-client";
+import type { ReportsSummary } from "@/lib/reports";
 
 interface AsyncState<T> {
   data: T | null;
@@ -62,20 +65,57 @@ export function useTransactions(
   };
 }
 
+export function useReportsSummary(months: number): AsyncState<ReportsSummary> {
+  const [nonce, setNonce] = React.useState(0);
+  const [settled, setSettled] = React.useState<{
+    months: number;
+    nonce: number;
+    data: ReportsSummary | null;
+    error: ApiError | Error | null;
+  }>({ months: -1, nonce: -1, data: null, error: null });
+
+  React.useEffect(() => {
+    let cancelled = false;
+    getReportsSummary({ months })
+      .then((res) => {
+        if (!cancelled) setSettled({ months, nonce, data: res, error: null });
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setSettled({ months, nonce, data: null, error: normalizeError(err) });
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [months, nonce]);
+
+  const reload = React.useCallback(() => setNonce((n) => n + 1), []);
+  const fresh = settled.months === months && settled.nonce === nonce;
+
+  return {
+    data: fresh ? settled.data : null,
+    error: fresh ? settled.error : null,
+    loading: !fresh,
+    reload,
+  };
+}
+
 export function isUnauthenticated(error: unknown): boolean {
   return error instanceof ApiError && error.code === "unauthenticated";
 }
 
 export function SignInPanel() {
+  const t = useTranslations("common");
   return (
     <Card className="text-sm text-muted">
-      <p className="font-medium text-foreground">Sign in to see your data</p>
-      <p className="mt-1">Your session has expired or you&apos;re signed out.</p>
+      <p className="font-medium text-foreground">{t("signInToSeeData")}</p>
+      <p className="mt-1">{t("sessionExpired")}</p>
       <a
         href="/login"
         className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
       >
-        Go to sign in
+        {t("goToSignIn")}
       </a>
     </Card>
   );
@@ -88,16 +128,17 @@ export function ErrorPanel({
   error: ApiError | Error;
   onRetry: () => void;
 }) {
+  const t = useTranslations("common");
   return (
     <Card className="text-sm">
-      <p className="font-medium text-foreground">Couldn&apos;t load this</p>
+      <p className="font-medium text-foreground">{t("couldntLoad")}</p>
       <p className="mt-1 text-muted">{error.message}</p>
       <button
         type="button"
         onClick={onRetry}
         className="mt-2 text-sm font-medium text-primary hover:underline"
       >
-        Try again
+        {t("retry")}
       </button>
     </Card>
   );

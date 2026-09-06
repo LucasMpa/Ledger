@@ -69,6 +69,17 @@ bucket, no column, no logging. `extraction_logs` stores model output only (no im
 `npm run db:migrate` (apply). `db:push` for throwaway local sync, `db:studio` to inspect.
 Commit everything under `lib/db/migrations/`.
 
+## i18n (next-intl)
+
+Locales: `pt-BR` (default) + `en`, chosen via the `NEXT_LOCALE` cookie — no URL
+routing. Config in `i18n/` (`config.ts`, `request.ts`, `setLocale` action);
+catalogues in `messages/{pt-BR,en}.json`. Every user-facing string goes through
+`t()` — `useTranslations(ns)` in Client Components, `getTranslations(ns)` in
+Server Components / Route Handlers. Add each new key to **both** catalogues.
+Category and payment-method display names live in the `categories` /
+`paymentMethods` namespaces (not `lib/categories.ts`). Format money/dates with
+the active locale (`useLocale()` / `Intl` with that locale).
+
 ## Checks
 
 `npm run lint`, `npm run typecheck`, `npm run build` must pass. Keep the README env +
