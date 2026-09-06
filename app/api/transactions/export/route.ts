@@ -1,25 +1,17 @@
 import type { NextRequest } from "next/server";
 import { and, desc, eq, gte, ilike, inArray, lte } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 
 import { requireUser } from "@/lib/auth";
-import { categoryLabels } from "@/lib/categories";
 import { db } from "@/lib/db/client";
 import { transactions } from "@/lib/db/schema";
+import { PAYMENT_METHODS } from "@/lib/extraction/schema";
 import { fail, zodFail } from "@/lib/http";
 import { zTransactionListQuery } from "@/lib/transactions";
 
-export const runtime = "nodejs";
+const PAYMENT_METHOD_SET = new Set<string>(PAYMENT_METHODS);
 
-const HEADER = [
-  "Date",
-  "Merchant",
-  "Category",
-  "Amount",
-  "Currency",
-  "Payment method",
-  "Source",
-  "Logged at",
-] as const;
+export const runtime = "nodejs";
 
 function csvCell(value: string): string {
   return /[",\r\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
@@ -72,17 +64,37 @@ export async function GET(request: NextRequest) {
     .where(and(...filters))
     .orderBy(desc(transactions.occurredOn), desc(transactions.id));
 
-  const lines = [HEADER.join(",")];
+  const [tCsv, tCat, tPay] = await Promise.all([
+    getTranslations("csv"),
+    getTranslations("categories"),
+    getTranslations("paymentMethods"),
+  ]);
+
+  const header = [
+    tCsv("date"),
+    tCsv("merchant"),
+    tCsv("category"),
+    tCsv("amount"),
+    tCsv("currency"),
+    tCsv("paymentMethod"),
+    tCsv("source"),
+    tCsv("loggedAt"),
+  ];
+  const lines = [header.map((h) => csvCell(h)).join(",")];
   for (const r of rows) {
     lines.push(
       [
         r.occurredOn,
         r.merchantName,
-        categoryLabels[r.category],
+        tCat(r.category),
         (r.amountCents / 100).toFixed(2),
         r.currency,
-        r.paymentMethod ?? "",
-        r.source,
+        r.paymentMethod
+          ? PAYMENT_METHOD_SET.has(r.paymentMethod)
+            ? tPay(r.paymentMethod)
+            : r.paymentMethod
+          : "",
+        r.source === "photo" ? tCsv("sourcePhoto") : tCsv("sourceManual"),
         r.createdAt.toISOString(),
       ]
         .map((v) => csvCell(String(v)))

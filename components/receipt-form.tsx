@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import * as React from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { CATEGORIES, categoryLabels, type Category } from "@/lib/categories";
+import { CATEGORIES, type Category } from "@/lib/categories";
 // Import from the leaf modules, not the `@/lib/extraction` barrel: the barrel
 // re-exports `claude.ts` -> `lib/env.ts`, whose top-level validation throws in
 // the browser. These two leaves only pull in zod.
@@ -54,6 +55,9 @@ export function ReceiptForm({
   submitting,
   error,
 }: ReceiptFormProps) {
+  const t = useTranslations("receiptForm");
+  const tCat = useTranslations("categories");
+  const tPay = useTranslations("paymentMethods");
   const [merchantName, setMerchantName] = React.useState(initial.merchant ?? "");
   const [amount, setAmount] = React.useState(centsToInput(initial.amountCents));
   const [currency] = React.useState(initial.currency || "BRL");
@@ -70,20 +74,20 @@ export function ReceiptForm({
     event.preventDefault();
     const trimmedMerchant = merchantName.trim();
     if (!trimmedMerchant) {
-      setLocalError("Enter a merchant name.");
+      setLocalError(t("enterMerchant"));
       return;
     }
     const amountCents = inputToCents(amount);
     if (amountCents == null) {
-      setLocalError("Enter an amount greater than zero.");
+      setLocalError(t("enterAmount"));
       return;
     }
     if (!occurredOn) {
-      setLocalError("Pick the receipt date.");
+      setLocalError(t("pickDate"));
       return;
     }
     if (occurredOn > today) {
-      setLocalError("The date cannot be in the future.");
+      setLocalError(t("dateNotFuture"));
       return;
     }
     setLocalError(null);
@@ -104,15 +108,13 @@ export function ReceiptForm({
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {initial.lowConfidence && (
         <div>
-          <Badge variant="warning">Low confidence</Badge>
-          <p className="mt-1 text-sm text-muted">
-            The model wasn&apos;t sure about this one — double-check every field.
-          </p>
+          <Badge variant="warning">{t("lowConfidence")}</Badge>
+          <p className="mt-1 text-sm text-muted">{t("lowConfidenceHint")}</p>
         </div>
       )}
 
       <div>
-        <Label htmlFor="merchantName">Merchant</Label>
+        <Label htmlFor="merchantName">{t("merchant")}</Label>
         <Input
           id="merchantName"
           value={merchantName}
@@ -124,7 +126,7 @@ export function ReceiptForm({
       </div>
 
       <div>
-        <Label htmlFor="amount">Amount ({currency})</Label>
+        <Label htmlFor="amount">{t("amount", { currency })}</Label>
         <Input
           id="amount"
           inputMode="decimal"
@@ -136,7 +138,7 @@ export function ReceiptForm({
       </div>
 
       <div>
-        <Label htmlFor="occurredOn">Date</Label>
+        <Label htmlFor="occurredOn">{t("date")}</Label>
         <Input
           id="occurredOn"
           type="date"
@@ -148,7 +150,7 @@ export function ReceiptForm({
       </div>
 
       <div>
-        <Label htmlFor="category">Category</Label>
+        <Label htmlFor="category">{t("category")}</Label>
         <Select
           id="category"
           value={category}
@@ -156,23 +158,23 @@ export function ReceiptForm({
         >
           {CATEGORIES.map((slug) => (
             <option key={slug} value={slug}>
-              {categoryLabels[slug]}
+              {tCat(slug)}
             </option>
           ))}
         </Select>
       </div>
 
       <div>
-        <Label htmlFor="paymentMethod">Payment method</Label>
+        <Label htmlFor="paymentMethod">{t("paymentMethod")}</Label>
         <Select
           id="paymentMethod"
           value={paymentMethod}
           onChange={(e) => setPaymentMethod(e.target.value)}
         >
-          <option value="">Not specified</option>
+          <option value="">{t("notSpecified")}</option>
           {PAYMENT_METHODS.map((method) => (
             <option key={method} value={method}>
-              {method[0].toUpperCase() + method.slice(1)}
+              {tPay(method)}
             </option>
           ))}
         </Select>
@@ -186,7 +188,7 @@ export function ReceiptForm({
 
       <div className="flex gap-3 pt-1">
         <Button type="submit" disabled={submitting} className="flex-1">
-          {submitting ? "Saving…" : "Confirm"}
+          {submitting ? t("saving") : t("confirm")}
         </Button>
         <Button
           type="button"
@@ -194,7 +196,7 @@ export function ReceiptForm({
           onClick={onDiscard}
           disabled={submitting}
         >
-          Discard
+          {t("discard")}
         </Button>
       </div>
     </form>

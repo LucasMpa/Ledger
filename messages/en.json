@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "title": "Ledger",
+    "description": "Snap the receipt. Forget the spreadsheet."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "sendReceipt": "Send Receipt",
+    "language": "Language"
+  },
+  "dashboard": {
+    "reports": "Reports",
+    "transactions": "Transactions",
+    "settings": "Settings"
+  },
+  "reports": {
+    "thisMonth": "This month",
+    "transactionCount": "{count, plural, one {# transaction} other {# transactions}}",
+    "exportCsv": "Export CSV",
+    "lastMonths": "Last {count} months",
+    "topMerchants": "Top merchants by spend · last {count} months",
+    "spent": "Spent",
+    "peak": "peak {value}",
+    "loading": "Loading reports…",
+    "noData": "No transactions yet. Send a receipt to get started."
+  },
+  "transactions": {
+    "loading": "Loading transactions…",
+    "empty": "No transactions yet. Send a receipt to add the first one.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "merchant": "Merchant",
+    "amount": "Amount",
+    "date": "Date",
+    "category": "Category",
+    "paymentMethod": "Payment method",
+    "noMethod": "No method",
+    "errDelete": "Could not delete.",
+    "errSave": "Could not save changes.",
+    "merchantRequired": "Merchant is required.",
+    "amountPositive": "Amount must be greater than zero.",
+    "dateNotFuture": "Date must not be in the future."
+  },
+  "receiptForm": {
+    "lowConfidence": "Low confidence",
+    "lowConfidenceHint": "The model wasn't sure about this one — double-check every field.",
+    "merchant": "Merchant",
+    "amount": "Amount ({currency})",
+    "date": "Date",
+    "category": "Category",
+    "paymentMethod": "Payment method",
+    "notSpecified": "Not specified",
+    "confirm": "Confirm",
+    "saving": "Saving…",
+    "discard": "Discard",
+    "enterMerchant": "Enter a merchant name.",
+    "enterAmount": "Enter an amount greater than zero.",
+    "pickDate": "Pick the receipt date.",
+    "dateNotFuture": "The date cannot be in the future."
+  },
+  "sendReceipt": {
+    "heading": "Send Receipt",
+    "subtitle": "Snap or pick a photo of the receipt — the rest is filled in for you.",
+    "chooseDifferent": "Choose a different photo",
+    "tapToChoose": "Tap to take or choose a photo",
+    "extract": "Extract",
+    "reading": "Reading receipt…",
+    "saved": "Transaction saved",
+    "savedHint": "It's now in your dashboard and this month's totals.",
+    "sendAnother": "Send another",
+    "genericError": "Something went wrong. Try again.",
+    "saveError": "Could not save the transaction. Try again.",
+    "previewAlt": "Receipt preview"
+  },
+  "login": {
+    "metaTitle": "Sign in · Ledger",
+    "heading": "Sign in",
+    "subtitle": "Sign in to send receipts and see your reports.",
+    "linkError": "That sign-in link didn't work. Request a new one below.",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "sendLink": "Send sign-in link",
+    "sending": "Sending…",
+    "checkEmail": "Check your email",
+    "checkEmailHint": "We sent a sign-in link to {email}. Open it on this device to continue.",
+    "noPassword": "No password — we email you a one-time link."
+  },
+  "settings": {
+    "signedInAs": "Signed in as {email}.",
+    "notSignedIn": "You are not signed in.",
+    "signOut": "Sign out",
+    "signIn": "Sign in"
+  },
+  "common": {
+    "retry": "Try again",
+    "couldntLoad": "Couldn't load this",
+    "signInToSeeData": "Sign in to see your data",
+    "sessionExpired": "Your session has expired or you're signed out.",
+    "goToSignIn": "Go to sign in"
+  },
+  "categories": {
+    "groceries": "Groceries",
+    "food": "Food",
+    "transport": "Transport",
+    "health": "Health",
+    "home": "Home",
+    "leisure": "Leisure",
+    "clothing": "Clothing",
+    "services": "Services",
+    "other": "Other"
+  },
+  "paymentMethods": {
+    "cash": "Cash",
+    "credit": "Credit",
+    "debit": "Debit",
+    "pix": "Pix",
+    "other": "Other"
+  },
+  "csv": {
+    "date": "Date",
+    "merchant": "Merchant",
+    "category": "Category",
+    "amount": "Amount",
+    "currency": "Currency",
+    "paymentMethod": "Payment method",
+    "source": "Source",
+    "loggedAt": "Logged at",
+    "sourcePhoto": "photo",
+    "sourceManual": "manual"
+  }
+}
