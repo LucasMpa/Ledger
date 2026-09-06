@@ -1,4 +1,5 @@
 import type { ExtractionResult } from "@/lib/extraction/types";
+import type { ReportsSummary } from "@/lib/reports";
 import type {
   TransactionCreateInput,
   TransactionDto,
@@ -189,4 +190,34 @@ export function deleteTransaction(
   return request<{ ok: true; id: string }>(`/api/transactions/${id}`, {
     method: "DELETE",
   });
+}
+
+/* -------------------------------------------------------------------------- */
+/* reports                                                                    */
+/* -------------------------------------------------------------------------- */
+
+export function getReportsSummary(
+  params: { months?: number } = {},
+): Promise<ReportsSummary> {
+  const query = params.months ? `?months=${params.months}` : "";
+  return request<ReportsSummary>(`/api/reports/summary${query}`);
+}
+
+/** Filters for the CSV export — same names as {@link ListTransactionsParams}. */
+export type ExportTransactionsParams = Pick<
+  ListTransactionsParams,
+  "from" | "to" | "category" | "source" | "search"
+>;
+
+/** Href for the authenticated CSV download (used as a plain `<a href download>`). */
+export function transactionsExportHref(
+  params: ExportTransactionsParams = {},
+): string {
+  const qs = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === "") continue;
+    qs.set(key, String(value));
+  }
+  const query = qs.toString();
+  return `/api/transactions/export${query ? `?${query}` : ""}`;
 }

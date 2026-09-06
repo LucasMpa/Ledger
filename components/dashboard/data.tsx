@@ -5,10 +5,12 @@ import * as React from "react";
 import { Card } from "@/components/ui/card";
 import {
   ApiError,
+  getReportsSummary,
   listTransactions,
   type ListTransactionsParams,
   type TransactionListResponse,
 } from "@/lib/api-client";
+import type { ReportsSummary } from "@/lib/reports";
 
 interface AsyncState<T> {
   data: T | null;
@@ -53,6 +55,42 @@ export function useTransactions(
 
   const reload = React.useCallback(() => setNonce((n) => n + 1), []);
   const fresh = settled.key === key && settled.nonce === nonce;
+
+  return {
+    data: fresh ? settled.data : null,
+    error: fresh ? settled.error : null,
+    loading: !fresh,
+    reload,
+  };
+}
+
+export function useReportsSummary(months: number): AsyncState<ReportsSummary> {
+  const [nonce, setNonce] = React.useState(0);
+  const [settled, setSettled] = React.useState<{
+    months: number;
+    nonce: number;
+    data: ReportsSummary | null;
+    error: ApiError | Error | null;
+  }>({ months: -1, nonce: -1, data: null, error: null });
+
+  React.useEffect(() => {
+    let cancelled = false;
+    getReportsSummary({ months })
+      .then((res) => {
+        if (!cancelled) setSettled({ months, nonce, data: res, error: null });
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setSettled({ months, nonce, data: null, error: normalizeError(err) });
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [months, nonce]);
+
+  const reload = React.useCallback(() => setNonce((n) => n + 1), []);
+  const fresh = settled.months === months && settled.nonce === nonce;
 
   return {
     data: fresh ? settled.data : null,
