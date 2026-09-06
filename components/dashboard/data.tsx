@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import * as React from "react";
 
 import { Card } from "@/components/ui/card";
@@ -105,15 +106,16 @@ export function isUnauthenticated(error: unknown): boolean {
 }
 
 export function SignInPanel() {
+  const t = useTranslations("common");
   return (
     <Card className="text-sm text-muted">
-      <p className="font-medium text-foreground">Sign in to see your data</p>
-      <p className="mt-1">Your session has expired or you&apos;re signed out.</p>
+      <p className="font-medium text-foreground">{t("signInToSeeData")}</p>
+      <p className="mt-1">{t("sessionExpired")}</p>
       <a
         href="/login"
         className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
       >
-        Go to sign in
+        {t("goToSignIn")}
       </a>
     </Card>
   );
@@ -126,16 +128,17 @@ export function ErrorPanel({
   error: ApiError | Error;
   onRetry: () => void;
 }) {
+  const t = useTranslations("common");
   return (
     <Card className="text-sm">
-      <p className="font-medium text-foreground">Couldn&apos;t load this</p>
+      <p className="font-medium text-foreground">{t("couldntLoad")}</p>
       <p className="mt-1 text-muted">{error.message}</p>
       <button
         type="button"
         onClick={onRetry}
         className="mt-2 text-sm font-medium text-primary hover:underline"
       >
-        Try again
+        {t("retry")}
       </button>
     </Card>
   );

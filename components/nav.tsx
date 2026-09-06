@@ -1,17 +1,20 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/cn";
 
 const LINKS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/send-receipt", label: "Send Receipt" },
+  { href: "/dashboard", key: "dashboard" },
+  { href: "/send-receipt", key: "sendReceipt" },
 ] as const;
 
 export function Nav() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-surface/90 backdrop-blur">
@@ -37,10 +40,11 @@ export function Nav() {
                   : "text-muted hover:bg-background hover:text-foreground",
               )}
             >
-              {link.label}
+              {t(link.key)}
             </Link>
           );
         })}
+        <LocaleSwitcher />
       </nav>
     </header>
   );
