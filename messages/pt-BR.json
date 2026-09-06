@@ -42,7 +42,9 @@
     "errSave": "Não foi possível salvar as alterações.",
     "merchantRequired": "Estabelecimento é obrigatório.",
     "amountPositive": "O valor deve ser maior que zero.",
-    "dateNotFuture": "A data não pode estar no futuro."
+    "dateNotFuture": "A data não pode estar no futuro.",
+    "confirmDeleteTitle": "Excluir esta transação?",
+    "confirmDeleteBody": "Isto remove “{merchant}” ({amount}) e não pode ser desfeito."
   },
   "receiptForm": {
     "lowConfidence": "Confiança baixa",
