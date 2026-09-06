@@ -1,8 +1,10 @@
 import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
-// drizzle-kit runs outside Next, so load .env.local explicitly.
+// drizzle-kit runs outside Next, so load env files explicitly.
+// .env.local wins (dotenv keeps the first value set); .env is the fallback.
 config({ path: ".env.local" });
+config({ path: ".env" });
 
 // `db:generate` is offline and never connects, so a placeholder is fine there.
 // `db:migrate` / `db:push` need a real URL and will fail loudly without one.

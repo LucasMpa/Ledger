@@ -70,10 +70,13 @@ export function SignInPanel() {
   return (
     <Card className="text-sm text-muted">
       <p className="font-medium text-foreground">Sign in to see your data</p>
-      <p className="mt-1">
-        Authentication isn&apos;t wired up in this build yet. Once it is, your
-        transactions and reports will show here.
-      </p>
+      <p className="mt-1">Your session has expired or you&apos;re signed out.</p>
+      <a
+        href="/login"
+        className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
+      >
+        Go to sign in
+      </a>
     </Card>
   );
 }
