@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/cn";
 
-type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
 type ButtonSize = "sm" | "md";
 
 export interface ButtonProps
@@ -23,6 +23,7 @@ const variants: Record<ButtonVariant, string> = {
   secondary:
     "border border-border bg-surface text-foreground hover:bg-background",
   ghost: "text-foreground hover:bg-surface",
+  destructive: "bg-red-600 text-white hover:bg-red-700",
 };
 
 const sizes: Record<ButtonSize, string> = {
