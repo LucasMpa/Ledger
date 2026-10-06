@@ -192,7 +192,7 @@ PROMPT_VERSION=v1
 | **1 — Vertical slice** | `/send-receipt`: upload one photo → `/api/extract` → JSON on screen (not saved). Measures extraction quality. |
 | **2 — Confirm & save** | Review form → `/api/transactions`; transaction list; manual edit and delete |
 | **3 — Reports** | `/dashboard`: monthly total, spending by category, 6-month trend, CSV export |
-| **4 — PWA & polish** | Installable app, share target, client-side compression, review of `extraction_logs` to settle on a model |
+| **4 — PWA & polish** | Installable app, native launch splash (`manifest.json` `background_color` / `theme_color` / icons), share target, client-side compression, review of `extraction_logs` to settle on a model |
 
 End of Phase 3 = a PoC that already replaces the spreadsheet.
 
